@@ -8,10 +8,6 @@ class MailPhotoSender:
         self.password = password
         self.smtp_server = smtp_server
         self.smtp_port = smtp_port
-
-    # --- EN ÖNEMLİ DEĞİŞİKLİK BURADA ---
-    # image_path için sabit kodlanmış varsayılan değer kaldırıldı.
-    # Artık bu fonksiyon, resim yolunun dışarıdan verilmesini ZORUNLU kılıyor.
     def send_mail_with_image(self, subject, body, to_email, image_path):
         """
         Bir resim ekiyle birlikte e-posta gönderir.
