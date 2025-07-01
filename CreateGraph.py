@@ -1,46 +1,46 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
+import os
+from datetime import datetime
+from SendMail import MailPhotoSender
+
 # Load the CSV file
-csv_file = 'visits_today.csv'
-data = pd.read_csv(csv_file)
+data = pd.read_csv('visits_today.csv', parse_dates=['entry_time', 'exit_time'])
 
-# Ensure the CSV has the required columns
-if len(data.columns) < 2:
-    raise ValueError("The CSV file must have at least two columns: one for labels and one for values.")
+# Calculate stay time in seconds for each visitor
+data['stay_time'] = (data['exit_time'] - data['entry_time']).dt.total_seconds()
 
-# Extract labels and values
-labels = data.iloc[:, 0]  # First column for labels
-values = data.iloc[:, 1]  # Second column for values
+# Sort data by stay time
+data = data.sort_values(by='stay_time').reset_index(drop=True)
 
-# Apply a style
-plt.style.use('ggplot')  # Use a valid matplotlib style
+# Create cumulative count of people for each stay time
+data['CumulativePeople'] = range(1, len(data) + 1)
 
-# Create the graph
+# Format stay time for x-axis labels
+data['StayTime'] = data['stay_time'].astype(int).astype(str) + ' sec'
+
+# Save the cleaned file (optional, for your existing code)
+data[['StayTime', 'CumulativePeople']].to_csv('visits_today.csv', index=False)
+
+# Plotting
+plt.style.use('ggplot')
 plt.figure(figsize=(12, 7))
-bars = plt.bar(labels, values, color=plt.cm.Paired.colors[:len(labels)])
-plt.xlabel('Labels', fontsize=14)
-plt.ylabel('Values', fontsize=14)
-plt.title('Graph from visits_today.csv', fontsize=16)
-plt.xticks(rotation=45, ha='right', fontsize=12)
-plt.yticks(fontsize=12)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+# Plotting as a line graph
+plt.plot(data['StayTime'], data['CumulativePeople'], marker='o', color='teal', alpha=0.9, linewidth=2, markersize=5 )
 
-# Add value annotations on top of the bars
-for bar in bars:
-    plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
-             f'{bar.get_height():.0f}', ha='center', fontsize=10)
+# Add point annotations
+for i, val in enumerate(data['CumulativePeople']):
+    plt.text(i, val + 0.3, f'{val}', ha='center', fontsize=10)
 
-plt.tight_layout()
+plt.xlabel('Stay Time (seconds)')
+plt.ylabel('Cumulative Number of People')
+plt.title('Cumulative Number of People by Stay Time')
+plt.xticks(rotation=45, ha='right' )
 
-# Save and show the graph
 plt.savefig('graph_output.png')
 plt.show()
 
-import os
-
-from SendMail import MailPhotoSender
-from dotenv import load_dotenv
 
 if __name__ == "__main__":
     # Load environment variables from infos.env file
