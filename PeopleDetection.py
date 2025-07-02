@@ -138,5 +138,12 @@ class PeopleTimer:
         self.logger.print_report()
         self.logger.flush_to_csv()
 
+from CreateGraph import GraphGenerator
 if __name__ == "__main__":
     PeopleTimer(cam=0, width=480, detect_interval=0.2).run()
+        # Generate and send graph after logging
+        
+    graph_gen = GraphGenerator(csv_file="visits_today.csv", env_file="infos.env")
+    graph_gen.load_data()
+    graph_gen.generate_graph()
+    graph_gen.send_graph_via_email()
