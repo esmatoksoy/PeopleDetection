@@ -1,4 +1,5 @@
 #Raspberry Pi People Counting and Daily Report System
+
 This project uses a Raspberry Pi and a camera to detect and count people entering a space in real-time. It tracks visit durations and generates daily summary graphs showing people flow patterns. At the end of each day, it automatically emails the report to the user.
 
 The system is built with Python, using computer vision libraries for detection, and integrates data logging, graph generation, and email notifications.
