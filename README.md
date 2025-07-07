@@ -13,8 +13,9 @@ Daily generation of visit summary graphs
 Automated email reports sent daily to a configured email address
 
 Create a .env file in the project root to securely store your email credentials and settings:
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
+
 EMAIL_USER=your_email@gmail.com
+
 EMAIL_PASSWORD=your_email_password_or_app_password
+
 EMAIL_RECEIVER=recipient_email@gmail.com
